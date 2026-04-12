@@ -1,10 +1,8 @@
-# Decryption
+from cryptography.fernet import Fernet
+import base64
 
-#1. Import cryptography library
 
-#2. Function to decrypt encrypted message:
-#   - Input encrypted bytes and password
-#   - Derive key from password with PBKDF2HMAC from crypto library
-#   - Decrypt
-#   - Convert bytes back to plaintext string
-
+def decrypt_data(data: bytes, key: bytes) -> bytes:
+    fernet_key = base64.urlsafe_b64encode(key[:32])
+    cipher = Fernet(fernet_key)
+    return cipher.decrypt(data)
