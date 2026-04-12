@@ -1,17 +1,12 @@
-# Image Upload & Save
+from PIL import Image
+import numpy as np
 
-#1. Import Pillow and os
 
-#2. Function to load image from path
-#   - Open with Pillow
-#   - Convert to RGB if needed
+def load_image(image_path: str) -> np.ndarray:
+    image = Image.open(image_path).convert("RGB")
+    return np.array(image)
 
-#3. Function to save modified image
-#   - Specify path and format (PNG recommended for lossless)
-#   - Ensure original image is not overwritten unless intended
 
-#4. Optional: function to calculate image distortion (PSNR / MSE) for evaluation (maybe do a separate program for that)
-
-#5. Error handling:
-#   - Invalid path
-#   - Unsupported image format (maybe add a jpeg/webm to png in future)
+def save_image(data: np.ndarray, output_path: str):
+    image = Image.fromarray(data.astype('uint8'))
+    image.save(output_path)
