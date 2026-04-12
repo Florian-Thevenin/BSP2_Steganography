@@ -1,0 +1,31 @@
+To do list (non exhaustive & not in order):
+
+
+Add Salting to key Gen
+
+Add Compatibility for RGBA, for png that have transparency checkerboard
+
+Make Histogram Util
+
+Add Jpeg and Webm to Png util
+
+Change ReadMe
+
+Update Release, and add a linux and macOS executable
+
+Do some research on LSB entropy & LSB noise & LSB Correlation for steganalysis
+
+Finish Test_utils.py
+
+Add GUI, tkinter
+
+Add more encryption model
+
+Comment more my code
+
+Possibility to change 2 or 3 LSB instead of 1
+
+
+
+
+
