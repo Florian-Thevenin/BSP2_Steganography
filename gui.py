@@ -1,32 +1,84 @@
-# Main
+from Steg.Image_Process import load_image, save_image
+from Steg.LSB_Encode import embed_lsb
+from Steg.LSB_Decode import extract_lsb
 
-#1. Import all necessary libraries: tkinter
+from Misc.Utils import (
+    text_to_bytes,
+    bytes_to_text,
+    compress_data,
+    decompress_data
+)
 
-#2. Initialize the main Tkinter window (title, size)
+from Crypto.Key_Generation import derive_key
+from Crypto.Encrypt import encrypt_data
+from Crypto.Decrypt import decrypt_data
 
-#3. Create a section for input image selection:
-#   - Button to open file explorer
-#   - Label to show selected image path
 
-#4. Create a section for plaintext message input:
-#   - Entry field for user to enter message
+def encode():
+    image_path = input("Input image path: ").strip()
+    output_path = input("Output image path: ").strip()
+    message = input("Message: ")
+    password = input("Password: ")
 
-#5. Create a section for password input:
-#   - Entry field with password
+    try:
+        image = load_image(image_path)
 
-#6. Create buttons for encoding and decoding operations
-#   - Encode button -> triggers message encryption + embedding
-#   - Decode button -> triggers extraction + decryption
 
-#7. Link GUI buttons to respective functions in crypto and stego modules
-#   - Encode button calls encrypt -> LSB encode -> save
-#   - Decode button calls load -> LSB decode -> decrypt
+        data = text_to_bytes(message)
+        data = compress_data(data)
 
-#8. Display output:
-#   - For encoding: confirm image saved
-#   - For decoding: show recovered plaintext in a messagebox or text field (optional save text in .txt file)
+        key = derive_key(password)
+        encrypted_data = encrypt_data(data, key)
 
-#9. Add error handling:
-#   - No image selected
+        encoded_image = embed_lsb(image, encrypted_data)
 
-#10. Run Tkinter mainloop
+        save_image(encoded_image, output_path)
+
+        print("Encoding complete")
+
+    except Exception as e:
+        print(f"Error during encoding: {e}")
+
+
+def decode():
+    image_path = input("Encoded image path: ").strip()
+    password = input("Password: ")
+
+    try:
+        image = load_image(image_path)
+
+        encrypted_data = extract_lsb(image)
+
+        key = derive_key(password)
+        decrypted_data = decrypt_data(encrypted_data, key)
+
+        decompressed_data = decompress_data(decrypted_data)
+
+        message = bytes_to_text(decompressed_data)
+
+        print("\nDecoded Message:")
+        print(message)
+
+    except Exception:
+        print("Wrong password or corrupted data")
+
+
+if __name__ == "__main__":
+    while True:
+        print("\n--- Steganography ---")
+        print("1: Encode message into image")
+        print("2: Decode message from image")
+        print("3: Exit")
+
+        choice = input("> ").strip()
+
+        if choice == "1":
+            encode()
+        elif choice == "2":
+            decode()
+        elif choice == "3":
+            print("Goodbye, thanks for using my app")
+            break
+        else:
+            print("Invalid choice")
+
