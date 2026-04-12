@@ -1,14 +1,5 @@
-# Key Generation from password
+import hashlib
 
-#1. Import cryptography library:
 
-#2. Function to generate a random salt
-
-#3. Function to derive a cryptographic key from password + salt
-#   - Use PBKDF2HMAC
-#   - Set iterations (100,000+)
-
-#4. Return derived key + salt (bytes)
-
-#6. Error handling:
-#   - Empty password
+def derive_key(password: str) -> bytes:
+    return hashlib.sha256(password.encode()).digest()
