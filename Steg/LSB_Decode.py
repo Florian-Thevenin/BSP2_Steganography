@@ -1,19 +1,24 @@
-# LSB Decoding/Extraction
+import numpy as np
 
-#1. Import required modules: Pillow, numpy,
+HEADER_SIZE = 32  # bits
 
-#2. Create function to read message length from the first pixels
 
-#3. Flatten the image pixel array
+def extract_lsb(image_data: np.ndarray) -> bytes:
+    flat_data = image_data.flatten()
 
-#4. Extract the LSBs corresponding to message bits
+    binary_data = ''.join(str(value & 1) for value in flat_data)
 
-#5. Reconstruct the binary string into bytes
+    # Read first 32 bits = payload length
+    length_bin = binary_data[:HEADER_SIZE]
+    payload_length = int(length_bin, 2)
 
-#6. Convert bytes to string using UTF-8
+    # Extract payload bits
+    payload_bits = binary_data[HEADER_SIZE:HEADER_SIZE + payload_length * 8]
 
-#7. Return the extracted encrypted message
+    # Convert to bytes
+    payload = bytes(
+        int(payload_bits[i:i+8], 2)
+        for i in range(0, len(payload_bits), 8)
+    )
 
-#8. Error handling:
-#   - If the message length is invalid
-#   - If extraction fails due to corrupted image or other things
+    return payload
