@@ -1,6 +1,6 @@
 # Steganography Bachelor Semester Project
 
-This project is developed as part of my first-semester Bachelor of Computer Science studies at the University of Luxembourg.
+This project is developed as part of my first project for my Bachelor of Computer Science studies at the University of Luxembourg.
 
 ## Abstract
 
