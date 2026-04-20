@@ -3,9 +3,10 @@ import base64
 
 
 def decrypt_data(data: bytes, key: bytes) -> bytes:
-    fernet_key = base64.urlsafe_b64encode(key[:32])
-    cipher = Fernet(fernet_key)
-    return cipher.decrypt(data)
+    """ Decrypts Fernet-encrypted binary using symmetric key"""
+    fernet_key = base64.urlsafe_b64encode(key[:32]) # Takes 32 bytes of key and format it into base64 for fernet
+    cipher = Fernet(fernet_key) # Initialize a Fernet cypher object
+    return cipher.decrypt(data) # Decrypts the input bytes and returns plaintext
 
 
 # PLACEHOLDERS ( for future algorithms)
