@@ -51,3 +51,27 @@ def save_image(data: np.ndarray, output_path: str):
 
     image = Image.fromarray(data.astype('uint8')) # Convert array to image, uint8 is for 0-255 RGB values
     image.save(output_path, format="PNG") # Save image to disk in png format
+
+
+
+def save_gif(frames: list, output_path: str, duration: int = 3500):
+    """ Saves a list of PIL Images as an animated GIF """
+    output_path = output_path.strip() # Remove extra whitespace from output path
+
+    if not output_path: # If no output path given, save the gif as output.gif to current directory
+        output_path = "output.gif"
+        print(f"Auto-resolved output file to: {output_path}")
+
+    base, ext = os.path.splitext(output_path) # Split path into filename and extension
+
+    if ext.lower() != ".gif": # If extension is not .gif, force it to .gif
+        output_path = base + ".gif"
+        print(f"Auto-resolved output gif to: {output_path}")
+
+    frames[0].save( # PIL's GIF API requires calling .save() on the first frame only
+        output_path,
+        save_all=True, # Tells PIL to save all frames, not just the first one
+        append_images=frames[1:], # Passes the remaining frames into the GIF
+        duration=duration, # How long each frame is displayed in milliseconds
+        loop=0 # 0 means loop forever
+    )
