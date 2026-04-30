@@ -136,9 +136,19 @@ def decode():
         else:
             print("Invalid value, defaulting to no decryption") # User typed invalid choice, default to no decryption
 
+        try:
+            decompressed_data = decompress_data(data)  # Decompress payload using zlib
+        except Exception:
+            print(
+                "Decompression failed, your password is likely incorrect")  # Catch garbage bytes from wrong decryption if password not correct
+            return
 
-        decompressed_data = decompress_data(data) # Decompress payload using zlib
-        message = bytes_to_text(decompressed_data) # Convert payload to readable text
+        try:
+            message = bytes_to_text(decompressed_data)  # Convert payload to readable text
+        except Exception:
+            print(
+                "Could not decode message, data may be corrupted or wrong password was used")  # Catch invalid utf-8 bytes
+            return
 
         print("\nDecoded Message:") # Print the plaintext into terminal
         print(message)

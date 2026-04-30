@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Steg.Image_Process import load_image
 
-
+# Arbitrary chosen for now
+STEGO_THRESHOLD = 5 # Sensitivity threshold for LSB modification detection, higher = less sensitive
 
 def histogram_difference(img1, img2):
     """ Compare pixel distributions between two images"""
@@ -97,8 +98,7 @@ def analyze_two_images(path_original, path_suspect):
     # Open a window for visual representation
     plot_histograms(hist_a, hist_b, diff)
 
-    # Simple decision rule (currently not tuned) arbitrary choosen
-    if score > 5:
+    if score > STEGO_THRESHOLD:
         print("Likely LSB-modified image")
     else:
         print("Likely unmodified image")
@@ -106,7 +106,6 @@ def analyze_two_images(path_original, path_suspect):
 
 # To make the program run when executed directly
 if __name__ == "__main__":
-    analyze_two_images(
-        ".docs/sky.png",
-        ".docs/sky_modified.png"
-    )
+    path_original = input("Original image path: ").strip() # Get original image path from user
+    path_suspect = input("Suspect image path: ").strip() # Get suspect image path from user
+    analyze_two_images(path_original, path_suspect)
