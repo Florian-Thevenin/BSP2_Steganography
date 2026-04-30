@@ -82,7 +82,7 @@ def render_single(image, text):
     draw = ImageDraw.Draw(img) # Create a drawing context attached to image, any "draw" call will directly paint onto that image
 
     w, h = img.size # Unbox image dimensions
-    font_size = 50 # Starting font size
+    font_size = 200 # Starting font size
 
     while font_size > 10: # Keeps trying smaller font sizes until the text fits.
         font = ImageFont.truetype(FONT_PATH, font_size) # Loads Custom font
