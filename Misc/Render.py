@@ -6,7 +6,7 @@ import re # Used for regex text splitting
 from Steg.Image_Process import load_image
 
 
-FONT_PATH = os.path.join(".docs", "Stardom-Regular.otf") # Font Used
+FONT_PATH = os.path.join(".docs", "Satoshi-Medium.otf") # Font Used
 MAX_SINGLE_RENDER_CHARS = 250 # Message under 250 char get render as image, longer ones becomes GIF
 
 
