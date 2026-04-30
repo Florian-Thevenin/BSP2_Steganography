@@ -68,7 +68,10 @@ def save_gif(frames: list, output_path: str, duration: int = 3500):
         output_path = base + ".gif"
         print(f"Auto-resolved output gif to: {output_path}")
 
-    frames[0].save( # PIL's GIF API requires calling .save() on the first frame only
+    if not frames:  # Guard against empty frames list which would crash on frames[0]
+        raise ValueError("No frames to save")
+
+    frames[0].save(  # PIL's GIF API requires calling .save() on the first frame only
         output_path,
         save_all=True, # Tells PIL to save all frames, not just the first one
         append_images=frames[1:], # Passes the remaining frames into the GIF
