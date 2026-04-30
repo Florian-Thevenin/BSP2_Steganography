@@ -1,6 +1,8 @@
-from Steg.Image_Process import load_image, save_image
+from Steg.Image_Process import load_image, save_image, save_gif
 from Steg.LSB_Embed import embed_lsb
 from Steg.LSB_Extract import extract_lsb
+import os
+
 
 from Misc.Utils import (
     text_to_bytes,
@@ -8,6 +10,8 @@ from Misc.Utils import (
     compress_data,
     decompress_data
 )
+
+from Misc.Render import render_text_on_image
 
 from Crypto.Key_Generation import derive_key
 from Crypto.Encrypt import encrypt_data, encrypt_second, encrypt_third
@@ -48,7 +52,7 @@ def encode():
 
             algo = input("> ").strip().lower() # Prompt User
 
-            key = derive_key(password) # Derive 256 bit key from user password
+            key = derive_key(password) # Derive 256-bit key from user password
 
             if algo in ["1", "fernet"]: # Selects Fernet encryption algorithm
                 encrypted_data = encrypt_data(data, key) # Encrypts compressed data using Fernet symmetric encryption
@@ -138,6 +142,39 @@ def decode():
 
         print("\nDecoded Message:") # Print the plaintext into terminal
         print(message)
+
+        print("\nDisplay options:") # Ask User if he wants a rendered image
+        print("1: Keep terminal output only")
+        print("2: Render message onto image")
+
+        choice = input("> ").strip().lower() # Takes user input
+
+        if choice in ["2", "render", "image"]:
+
+            print("\nRendering message onto image...")
+
+            try:
+                result = render_text_on_image(image, message) # Calls render module main function
+
+                output_path = input("Output path: ").strip() # Ask where to save rendered image
+
+
+                # GIF Mode
+                if isinstance(result, list):  # If result is a list -> it means its a GIF
+                    save_gif(result, output_path)
+
+
+                # Image Mode
+                else:
+                    save_image(result, output_path)  # Save the rendered image
+
+                print(f"Saved at: {output_path}")
+
+            except Exception as e:
+                print(f"Rendering failed: {e}")
+
+        else:
+            print("Message not rendered")
 
     except Exception as e:
         print("Error during decoding:", e)
