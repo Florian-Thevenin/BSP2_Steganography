@@ -33,7 +33,7 @@ def test_capacity(image_path: str):
     print(f"Max ASCII chars    : {usable_bytes} chars") # MAX ASCII Characters (8 bits for one char)
     print(f"Safe UTF-8 chars   : ~{usable_bytes // 2} chars") # Average Max UTF-8 (ASCII takes 8 bits, but accented letters e.g. (é, ï) takes 2
 
-    return usable_bytes # Return Max payload
+    return usable_bytes, image  # Return capacity and image together to avoid loading twice in run_pipeline
 
 
 def test_compression(message: str, max_capacity: int):
@@ -130,7 +130,7 @@ def get_mock_payload(choice, max_capacity):
 
         return result.strip()
 
-    return None
+    raise ValueError(f"Invalid payload choice: {choice}")  # Prevent None being passed to text_to_bytes
 
 
 def run_pipeline():
@@ -146,7 +146,7 @@ def run_pipeline():
 
     # Measures Loading time and add to total
     start = now()
-    max_capacity = test_capacity(image_path)
+    max_capacity, image = test_capacity(image_path)  # Unpack both capacity and image to avoid loading twice
     total_exec_time += now() - start
 
 
@@ -194,7 +194,6 @@ def run_pipeline():
 
     print("\n--- Embedding ---")
     # Measures embedding execution time
-    image = load_image(image_path)
 
     start = now()
     stego_array = embed_lsb(image.copy(), encrypted)
