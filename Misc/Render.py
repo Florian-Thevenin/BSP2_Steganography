@@ -156,7 +156,7 @@ def render_gif(image, text):
 
         w, h = frame.size # Gets frame dimensions
 
-        font_size = 125 # Starting font size
+        font_size = 70 # Starting font size
 
         while font_size > 10: # Keeps trying smaller font sizes until the text fits
             font = ImageFont.truetype(FONT_PATH, font_size) # Load font at current size
