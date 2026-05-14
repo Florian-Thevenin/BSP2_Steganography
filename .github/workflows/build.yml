@@ -28,7 +28,7 @@ jobs:
 
       - name: Build
         run: |
-          pyinstaller --onefile --windowed --name "Stag Hide" gui.py
+          pyinstaller --onefile --windowed --name "Stag Hide" --icon ".docs/Stag.ico" gui.py
 
       - uses: actions/upload-artifact@v4
         with:
