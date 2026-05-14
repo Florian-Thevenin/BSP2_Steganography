@@ -170,7 +170,7 @@ def decode():
 
 
                 # GIF Mode
-                if isinstance(result, list):  # If result is a list -> it means its a GIF
+                if isinstance(result, list):  # If result is a list -> Means its a GIF
                     save_gif(result, output_path)
 
 
