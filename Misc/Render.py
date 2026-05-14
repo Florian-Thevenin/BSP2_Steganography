@@ -118,26 +118,28 @@ def render_single(image, text):
     return np.array(img) # Converts finished image back to numpy array
 
 
-def smart_chunk_text(text, max_words=20):
+def smart_chunk_text(text, max_words=8):
     """ Splits long text into smaller chunks for GIF frames, break at punctuation"""
     parts = re.split(r'(?<=[.,])\s+', text) # Splits the text at any whitespace that follows a comma or full stop.
-    chunks, buf = [], "" # chunks if final list of frame texts, buf for buffer is current chunk being accumulated.
+    chunks, buf = [], [] # chunks is final list of frame texts, buf for buffer is current chunk being accumulated.
 
     for p in parts: # Iterates over each punctuation part
-        cand = (buf + " " + p).strip() if buf else p # Builds a candidate chunk. If buf is not empty, appends new part with a space
+        buf_words = buf + p.split() # Count words if we add this part
 
-        if len(cand.split()) <= max_words: # checks if candidate chunk is within word limit
-            buf = cand # if within limit, accept it and keep accumulating
-        else: # if exceed word limit
-            if buf: # makes sure buffer is not empty
-                chunks.append(buf) # Saves current chunk as a completed frame
-            buf = p # Start a new chunk with the part that didn't fit
+        if len(buf_words) <= max_words: # Checks if candidate chunk is within word limit
+            buf = buf_words # If within limit, accept it and keep accumulating
+        else:
+            # Force split by individual words when part alone exceeds limit
+            for word in p.split():
+                if len(buf) >= max_words:
+                    chunks.append(' '.join(buf)) # Saves current chunk as a completed frame
+                    buf = []
+                buf.append(word)
 
     if buf: # End of loop flush
-        chunks.append(buf) # Save final chunk
+        chunks.append(' '.join(buf)) # Save final chunk
 
     return chunks # Return list of text chunks
-
 
 def render_gif(image, text):
     """ Render a multi frame GIF, one frame per text chunk"""
