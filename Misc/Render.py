@@ -82,7 +82,7 @@ def render_single(image, text):
     draw = ImageDraw.Draw(img) # Create a drawing context attached to image, any "draw" call will directly paint onto that image
 
     w, h = img.size # Unbox image dimensions
-    font_size = 200 # Starting font size
+    font_size = 125 # Starting font size
 
     while font_size > 10: # Keeps trying smaller font sizes until the text fits.
         font = ImageFont.truetype(FONT_PATH, font_size) # Loads Custom font
@@ -144,7 +144,7 @@ def render_gif(image, text):
     image = to_numpy_image(image) # Normalize to numpy array
 
     base = Image.fromarray(image.astype("uint8")) # Base -> every frame is the same
-    chunks = smart_chunk_text(text) # split text into framed sized chunks
+    chunks = smart_chunk_text(text) # Split text into frame sized chunks
 
     frames = [] # Will hold finished image for each frame
 
@@ -153,26 +153,38 @@ def render_gif(image, text):
         draw = ImageDraw.Draw(frame) # Create a drawing context for this frame
 
         w, h = frame.size # Gets frame dimensions
-        font = ImageFont.truetype(FONT_PATH, 40) # Loads the font at a fixed size 40 -> Stay Consistent
 
-        lines = wrap_text_centered(draw, chunk, font, int(w * 0.9)) # Wraps this chunks text to fit 90% of frame width
+        font_size = 125 # Starting font size
 
-        line_height = font.getbbox("Ay")[3] # Gets line height the same way as in render_single
-        total_height = line_height * len(lines) # Total pixel height of the text block for this frame.
+        while font_size > 10: # Keeps trying smaller font sizes until the text fits
+            font = ImageFont.truetype(FONT_PATH, font_size) # Load font at current size
+            lines = wrap_text_centered(draw, chunk, font, int(w * 0.9)) # Wrap text to 90% of frame width
 
-        y = h - total_height - 20 # Starting Y for the text block, 20px above the bottom.
+            line_height = font.getbbox("Ay")[3] # Get line height using full ascender/descender range
+            total_height = line_height * len(lines) # Total pixel height of the text block
 
-        # Apply gradient shadow to frame
-        apply_gradient(frame)
+            max_line_width = max(draw.textbbox((0, 0), l, font=font)[2] for l in lines) # Widest line
 
-        # Draw each line of this chunk centred onto the frame
-        draw_text_lines(draw, lines, font, w, y, line_height)
+            if max_line_width <= w and total_height <= h * 0.4: # Fits within frame width and 40% of height
+                break # Conditions met, exit loop
 
-        frames.append(frame) # Adds the completed frame to the list.
+            font_size -= 2 # Didn't fit, shrink font by 2
 
-    # Return frames ONLY (main handles saving)
-    return frames
+        font = ImageFont.truetype(FONT_PATH, font_size) # Reload font at final size
+        lines = wrap_text_centered(draw, chunk, font, int(w * 0.9)) # Re-wrap text at final font size
 
+        line_height = font.getbbox("Ay")[3] # Recalculate line height at final size
+        total_height = line_height * len(lines) # Recalculate total text block height
+
+        y = h - total_height - 20 # Position text block 20px above the bottom of the frame
+
+        apply_gradient(frame) # Apply gradient shadow so white text is readable
+
+        draw_text_lines(draw, lines, font, w, y, line_height) # Draw each line centred onto the frame
+
+        frames.append(frame) # Add completed frame to the list
+
+    return frames # Return frames only, main handles saving
 
 def render_text_on_image(image, text):
     """ Function that choose to render onto static image or GIF depending on message length"""
