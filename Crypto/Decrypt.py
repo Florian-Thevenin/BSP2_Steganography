@@ -8,11 +8,3 @@ def decrypt_data(data: bytes, key: bytes) -> bytes:
     cipher = Fernet(fernet_key) # Initialize a Fernet cypher object
     return cipher.decrypt(data) # Decrypts the input bytes and returns plaintext
 
-
-# PLACEHOLDERS ( for future algorithms)
-def decrypt_second(data: bytes):
-    raise NotImplementedError("Other decryption not implemented yet")
-
-
-def decrypt_third(data: bytes):
-    raise NotImplementedError("Other decryption not implemented yet")

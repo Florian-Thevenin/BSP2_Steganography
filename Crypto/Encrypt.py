@@ -9,10 +9,3 @@ def encrypt_data(data: bytes, key: bytes) -> bytes:
     return cipher.encrypt(data) # Encrypts the input bytes and returns ciphertext
 
 
-# PLACEHOLDERS ( for future algorithms)
-def encrypt_second(data: bytes):
-    raise NotImplementedError("Other encryption not implemented yet")
-
-
-def encrypt_third(data: bytes):
-    raise NotImplementedError("Other encryption not implemented yet")
