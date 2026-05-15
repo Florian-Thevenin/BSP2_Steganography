@@ -1,5 +1,14 @@
 import zlib # Lossless Compression & Decompression Algorithm
+import os
+import sys
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def text_to_bytes(text: str) -> bytes:
     """ Convert a string into bytes using utf-8 encoding"""
