@@ -18,22 +18,22 @@ from Crypto.Encrypt import encrypt_data
 from Crypto.Decrypt import decrypt_data
 
 
-# ─── Palette — moody pastel blue sky ────────────────────────────────────────
-BG        = "#d6e8f5"   # pale morning sky
-SURFACE   = "#b8d4ea"   # soft cloud blue
-SURFACE2  = "#cfe0ef"   # lighter cloud surface
-BORDER    = "#8ab4d4"   # horizon line blue
-ACCENT    = "#3a7fc1"   # deep sky blue
-ACCENT2   = "#2563a8"   # darker accent / hover
-TEXT      = "#1a2e42"   # dark ink
-MUTED     = "#5a7a96"   # faded cloud text
-SUCCESS   = "#2d7a4f"   # muted green
-ERROR     = "#b03030"   # muted red
-NAV_BG    = "#a8c8e0"   # slightly deeper for nav
-NAV_SEL   = "#cfe0ef"   # selected nav item
+# Palette
+BG        = "#d6e8f5"
+SURFACE   = "#b8d4ea"
+SURFACE2  = "#cfe0ef"
+BORDER    = "#8ab4d4"
+ACCENT    = "#3a7fc1"
+ACCENT2   = "#2563a8"
+TEXT      = "#1a2e42"
+MUTED     = "#5a7a96"
+SUCCESS   = "#2d7a4f"
+ERROR     = "#b03030"
+NAV_BG    = "#a8c8e0"
+NAV_SEL   = "#cfe0ef"
 NAV_W     = 180
 
-# ─── Fonts ───────────────────────────────────────────────────────────────────
+#  Fonts
 FONT_UI   = ("Segoe UI", 12)
 FONT_SM   = ("Segoe UI", 10)
 FONT_XS   = ("Segoe UI", 9)
@@ -41,7 +41,7 @@ FONT_H    = ("Segoe UI", 14, "bold")
 FONT_MONO = ("Consolas", 10)
 
 
-# ─── Widget helpers ───────────────────────────────────────────────────────────
+# Widget helpers
 
 def make_scrollbar(parent, command):
     """Thin styled scrollbar (8 px wide)."""
@@ -96,7 +96,7 @@ def styled_button(parent, text, command, accent=False, small=False, **kwargs):
 
 
 def styled_entry(parent, width=30):
-    """Plain visible-text entry (no masking)."""
+    """text entry."""
     return tk.Entry(
         parent, bg=SURFACE2, fg=TEXT,
         insertbackground=ACCENT,
@@ -119,7 +119,7 @@ def divider(parent):
     return tk.Frame(parent, bg=BORDER, height=1)
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -146,7 +146,7 @@ class App(tk.Tk):
         self._build_layout()
         self._show_section("embed")
 
-    # ── Layout ───────────────────────────────────────────────────────────────
+    # Layout
     def _build_layout(self):
         # Left navigation strip
         self.nav = tk.Frame(self, bg=NAV_BG, width=NAV_W)
@@ -206,14 +206,14 @@ class App(tk.Tk):
         self.content.pack(side="left", fill="both", padx=(20, 0), pady=20)
         self.content.pack_propagate(False)
 
-    # ── Nav highlight ─────────────────────────────────────────────────────────
+    # Nav highlight
     def _highlight_nav(self, key):
         for k, btn in self.nav_buttons.items():
             btn.config(bg=NAV_SEL if k == key else NAV_BG,
                        fg=ACCENT2  if k == key else TEXT)
         self.active_nav = key
 
-    # ── State management ──────────────────────────────────────────────────────
+    # State management
     def _reset_state(self):
         self.current_image_path = None
         self.current_np_image   = None
@@ -230,7 +230,7 @@ class App(tk.Tk):
         for w in self.content.winfo_children():
             w.destroy()
 
-    # ── Preview display ───────────────────────────────────────────────────────
+    # Preview display
     def _show_np_in_preview(self, np_img):
         self._show_pil_in_preview(Image.fromarray(np_img.astype("uint8")))
 
@@ -251,7 +251,7 @@ class App(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Could not load image:\n{e}")
 
-    # ── Section router ────────────────────────────────────────────────────────
+    # Section router
     def _show_section(self, key):
         if key != self.active_nav:
             self._reset_state()
@@ -261,9 +261,8 @@ class App(tk.Tk):
          "extract": self._build_extract,
          "render": self._build_render}[key]()
 
-    # ══════════════════════════════════════════════════════════════════════════
+
     # EMBED
-    # ══════════════════════════════════════════════════════════════════════════
     def _build_embed(self):
         c = self.content
 
@@ -392,9 +391,8 @@ class App(tk.Tk):
 
         threading.Thread(target=_run, daemon=True).start()
 
-    # ══════════════════════════════════════════════════════════════════════════
+
     # EXTRACT
-    # ══════════════════════════════════════════════════════════════════════════
     def _build_extract(self):
         c = self.content
 
@@ -560,9 +558,8 @@ class App(tk.Tk):
         self.current_image_path = None
         self.current_np_image   = None
 
-    # ══════════════════════════════════════════════════════════════════════════
+
     # RENDER
-    # ══════════════════════════════════════════════════════════════════════════
     def _build_render(self, prefill_message=None):
         c = self.content
 
@@ -686,8 +683,6 @@ class App(tk.Tk):
         self._rnd_status.config(text="✓ Rendered. Adjust and re-render if needed.", fg=SUCCESS)
 
         if isinstance(result, list):
-            # GIF: show first frame. _show_pil_in_preview copies before thumbnailing,
-            # so result[0] is never mutated and the saved GIF has full-size frames.
             self._show_pil_in_preview(result[0])
         else:
             self._show_np_in_preview(result)
