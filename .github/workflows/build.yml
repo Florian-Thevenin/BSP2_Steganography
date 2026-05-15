@@ -4,15 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os:
-          - windows-latest
-          - ubuntu-latest
-          - macos-latest
-
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +20,85 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build Windows
-        if: matrix.os == 'windows-latest'
         run: |
-          pyinstaller --onefile --windowed --name "Stag Hide" --icon ".docs/Stag.ico" --add-data ".docs;.docs" gui.py
-
-      - name: Build Linux/macOS
-        if: matrix.os != 'windows-latest'
-        run: |
-          pyinstaller --onefile --windowed --name "Stag Hide" --add-data ".docs:.docs" gui.py
+          pyinstaller --onefile --windowed --name "Stag Hide" --icon ".docs/Stag.ico" gui.py
 
       - uses: actions/upload-artifact@v4
         with:
-          name: StagHide-${{ matrix.os }}
+          name: StagHide-windows-latest
+          path: dist/*
+
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build Linux
+        run: |
+          pyinstaller --onefile --windowed --name "Stag Hide" gui.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StagHide-ubuntu-latest
+          path: dist/*
+
+
+  build-macos-latest:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build macOS (latest)
+        run: |
+          pyinstaller --windowed --name "Stag Hide" --icon ".docs/Stag.ico" gui.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StagHide-macos-latest
+          path: dist/*
+
+
+  build-macos-intel:
+    runs-on: macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build macOS Intel (2017 MacBook Pro)
+        run: |
+          arch -x86_64 pyinstaller --windowed --name "Stag Hide" --icon ".docs/Stag.ico" gui.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StagHide-macos-intel
           path: dist/*
