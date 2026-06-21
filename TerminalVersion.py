@@ -1,7 +1,7 @@
 from Steg.Image_Process import load_image, save_image, save_gif
 from Steg.LSB_Embed import embed_lsb
 from Steg.LSB_Extract import extract_lsb
-import os
+
 
 
 from Misc.Utils import (
@@ -14,8 +14,8 @@ from Misc.Utils import (
 from Misc.Render import render_text_on_image
 
 from Crypto.Key_Generation import derive_key
-from Crypto.Encrypt import encrypt_data, encrypt_second, encrypt_third
-from Crypto.Decrypt import decrypt_data, decrypt_second, decrypt_third
+from Crypto.Encrypt import encrypt_data
+from Crypto.Decrypt import decrypt_data
 
 
 
@@ -59,11 +59,9 @@ def encode():
                 print("Using Fernet encryption")
 
             elif algo in ["2", "second"]:
-                encrypted_data = encrypt_second(data)
                 print("Using Other encryption (not implemented)")
 
             elif algo in ["3", "third"]:
-                encrypted_data = encrypt_third(data)
                 print("Using Other encryption (not implemented)")
 
             else:
@@ -122,11 +120,9 @@ def decode():
                 print("Fernet decryption successful")
 
             elif algo in ["2", "second"]:
-                data = decrypt_second(extracted_data)
                 print("Other decryption (not implemented)")
 
             elif algo in ["3", "third"]:
-                data = decrypt_third(extracted_data)
                 print("Other decryption (not implemented)")
 
             else:
